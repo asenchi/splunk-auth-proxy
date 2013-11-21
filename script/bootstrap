@@ -1,0 +1,14 @@
+#!/bin/sh
+export PATH="/usr/local/share/nodenv/shims:$PATH"
+
+# Load up app-config
+if [ -f .app-config/${DEPLOY_ENV} ]; then
+  . .app-config/${DEPLOY_ENV}.sh
+fi
+
+# For CI or initial Bootstrap
+if [ -z $NODENV_VERSION ]; then
+  export NODENV_VERSION="v0.8"
+fi
+
+npm install

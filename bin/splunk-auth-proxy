@@ -1,0 +1,38 @@
+#!/bin/bash
+
+export NODE_ENV="${NODE_ENV:-production}"
+
+# put npm installed things on the path
+export PATH="node_modules/.bin:$PATH"
+
+# bootstrap with 0.8.11 in production
+if [ -d /usr/local/share/nodenv/shims ]; then
+  export PATH="/usr/local/share/nodenv/shims:$PATH"
+elif [ -d /usr/share/nvm/0.8.11/bin ]; then
+  export PATH="/usr/share/nvm/0.8.11/bin:$PATH"
+fi
+
+# Make sure coffee is on the path
+export PATH="node_modules/coffee-script/bin:$PATH"
+
+# Load environment specific environment variables
+
+# dotenv style
+if [ -f .env ]; then
+  source .env
+fi
+
+# dotenv environment-specific style
+if [ -f .env.${NODE_ENV} ]; then
+  source .env.${NODE_ENV}
+fi
+
+# looking for HUBOT_CAMPFIRE_ROOMS? see https://cerebro.githubapp.com/articles/adding-hubot-to-a-new-campfire-room
+
+# gpanel-style
+if [[ -f .app-config/${NODE_ENV}.sh ]]; then
+  source .app-config/${NODE_ENV}.sh
+fi
+
+# Start splunk-auth-proxy
+coffee server.coffee ../config.json
